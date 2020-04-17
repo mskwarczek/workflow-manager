@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Router from './Router/router';
+import Router from './Router/Router';
 import Sidebar from './CommonViews/Sidebar/Sidebar';
 
 const App = () => {

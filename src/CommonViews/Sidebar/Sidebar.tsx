@@ -6,8 +6,8 @@ const Sidebar = () => {
   return (
     <div>
         Sidebar
-        <Link to='/'>To home</Link>
-        <Link to='/test'>To test</Link>
+        <Link to='/'>Home Page</Link>
+        <Link to='/test'>Test Page</Link>
     </div>
   );
 };
