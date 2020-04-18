@@ -1,21 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { MemoryRouter } from 'react-router-dom';
-import { render, fireEvent } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
+import { render, fireEvent } from '../../config/test-utils';
 
 import RegisterPage from './RegisterPage';
-
-const RegisterPageWrapper =
-  <MemoryRouter>
-    <RegisterPage />
-  </MemoryRouter>;
-
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(RegisterPageWrapper, div);
-  ReactDOM.unmountComponentAtNode(div);
-});
 
 const fieldsChangeAndLengthValidation = (field, queryByTestId) => {
   fireEvent.change(queryByTestId(field), { target: { value: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbb' } });
@@ -26,8 +12,8 @@ const fieldsChangeAndLengthValidation = (field, queryByTestId) => {
   expect(queryByTestId('errorMsg')).toBeNull();
 };
 
-it('fills and validates max length of all form fields', () => {
-  const { queryByTestId } = render(RegisterPageWrapper);
+it('renders properly, fills and validates max length of all form fields', () => {
+  const { queryByTestId } = render(<RegisterPage />);
   fieldsChangeAndLengthValidation('firstName', queryByTestId);
   fieldsChangeAndLengthValidation('lastName', queryByTestId);
   fieldsChangeAndLengthValidation('email', queryByTestId);
@@ -44,7 +30,7 @@ const fillFormWithValidData = queryByTestId => {
 };
 
 it('validates email address on submit', () => {
-  const { queryByTestId } = render(RegisterPageWrapper);
+  const { queryByTestId } = render(<RegisterPage />);
   fillFormWithValidData(queryByTestId);
   fireEvent.change(queryByTestId('email'), { target: { value: 'chucknorris.com' } });
   fireEvent.click(queryByTestId('submit'));
@@ -52,7 +38,7 @@ it('validates email address on submit', () => {
 });
 
 it('validates password and confirmPassword address on submit', () => {
-  const { queryByTestId } = render(RegisterPageWrapper);
+  const { queryByTestId } = render(<RegisterPage />);
   fillFormWithValidData(queryByTestId);
   fireEvent.change(queryByTestId('confirmPassword'), { target: { value: 'roundhousekicks' } });
   fireEvent.click(queryByTestId('submit'));
