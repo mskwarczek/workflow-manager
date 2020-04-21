@@ -1,0 +1,8 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# key / url / password files
+dburl.json
+secret_key.json
+
+# compiled server side .ts files
+*.js
