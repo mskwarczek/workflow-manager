@@ -1,12 +1,43 @@
+import axios from 'axios';
+import { AnyAction } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk'
+
 import {
-  User,
+  IUser,
+  IUserForm,
   UserActionTypes,
-  ADD_NEW_USER,
+  REGISTER_USER_REQUEST,
+  REGISTER_USER_SUCCESS,
+  REGISTER_USER_FAILURE,
 } from './types';
 
-export const addNewUser = (userData: User): UserActionTypes => {
+// Register user
+
+export const registerUser = (user: IUserForm): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    dispatch(registerUserRequest());
+    axios.post('/api/user/register', { ...user })
+      .then(response => dispatch(registerUserSuccess(response.data)))
+      .catch(error => dispatch(registerUserFailure(error.toJSON)));
+  };
+};
+
+export const registerUserRequest = (): UserActionTypes => {
   return {
-    type: ADD_NEW_USER,
-    payload: userData,
+    type: REGISTER_USER_REQUEST,
+  };
+};
+
+export const registerUserSuccess = (user: IUser): UserActionTypes => {
+  return {
+    type: REGISTER_USER_SUCCESS,
+    user,
+  };
+};
+
+export const registerUserFailure = (error: string): UserActionTypes => {
+  return {
+    type: REGISTER_USER_FAILURE,
+    error,
   };
 };

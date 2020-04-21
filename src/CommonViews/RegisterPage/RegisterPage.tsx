@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useDispatch } from 'react-redux'
+
+import { registerUser } from '../../Store/user/actions';
 
 const RegisterPage = () => {
 
@@ -18,6 +21,8 @@ const RegisterPage = () => {
   const [ email, setEmail ] = useState(initialState);
   const [ password, setPassword ] = useState(initialState);
   const [ confirmPassword, setConfirmPassword ] = useState(initialState);
+
+  const dispatch = useDispatch();
 
   const validateInputLength = (setFunction: (val: FormField) => void, value: string) => {
     value.length <= 30
@@ -42,8 +47,12 @@ const RegisterPage = () => {
     if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email.value)) setEmail({ ...email, error: 'Invalid email address.' });
     if (password.value !== confirmPassword.value) setConfirmPassword({ ...confirmPassword, error: 'Passwords aren\'t identical.' });
     if (firstName.error || lastName.error || email.error || password.error || confirmPassword.error) return;
-
-    // redux and backend call here
+    dispatch(registerUser({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+    }));
   };
   
   return (
