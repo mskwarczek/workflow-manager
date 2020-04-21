@@ -7,7 +7,7 @@ import {
 } from './types';
 
 const initialState: IUserState = {
-  id: '',
+  _id: '',
   isVerified: false,
   firstName: '',
   lastName: '',
@@ -21,6 +21,7 @@ const userReducer = (
   state = initialState,
   action: UserActionTypes,
 ): IUserState => {
+  console.log(state, action);
   switch (action.type) {
     case REGISTER_USER_REQUEST: return {
       ...state,

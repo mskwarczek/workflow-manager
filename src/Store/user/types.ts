@@ -10,7 +10,7 @@ export interface IUserForm {
 };
 
 export interface IUser {
-  id: string;
+  _id: string;
   isVerified: boolean;
   firstName: string;
   lastName: string;

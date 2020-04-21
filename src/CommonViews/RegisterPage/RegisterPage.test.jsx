@@ -44,7 +44,3 @@ it('validates password and confirmPassword address on submit', () => {
   fireEvent.click(queryByTestId('submit'));
   expect(queryByTestId('errorMsg')).toBeInTheDocument();
 });
-
-// it('on click submit button sends complete user data to server', () => {
-//   
-// });

@@ -40,7 +40,8 @@
     "eject": "react-scripts eject",
     "server-compile": "tsc -w -p server/tsconfig.json",
     "server-run": "nodemon server/index.js",
-    "server": "concurrently \"npm run server-compile\" \"npm run server-run\""
+    "server": "concurrently \"npm run server-compile\" \"npm run server-run\"",
+    "dev": "concurrently \"npm run server\" \"npm run start\""
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,5 +57,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:5000"
 }

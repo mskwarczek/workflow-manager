@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import { IRootState } from '../../Store/store';
 
 import { registerUser } from '../../Store/user/actions';
 
@@ -22,6 +23,7 @@ const RegisterPage = () => {
   const [ password, setPassword ] = useState(initialState);
   const [ confirmPassword, setConfirmPassword ] = useState(initialState);
 
+  const serverError = useSelector((state: IRootState) => state.user.error);
   const dispatch = useDispatch();
 
   const validateInputLength = (setFunction: (val: FormField) => void, value: string) => {
@@ -116,6 +118,7 @@ const RegisterPage = () => {
             data-testid='submit'
             type='submit'
             value={'Register'} />
+          {serverError && <p data-testid='serverErorMsg'>{serverError}</p>}
       </form>
       <p>Already have an account?</p><NavLink className='link' to='/signin'>Sign in</NavLink>
     </div>
