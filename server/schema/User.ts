@@ -32,6 +32,16 @@ const UserSchema = new mongoose.Schema({
   }],
 });
 
-const User = mongoose.model('User', UserSchema);
+interface IUser extends mongoose.Document {
+  _id: string;
+  firstName: string;
+  lastName?: string;
+  email: string;
+  password: string;
+  isVerified: boolean;
+  organizations: string[];
+};
+
+const User = mongoose.model<IUser, mongoose.Model<IUser>>('User', UserSchema);
 
 export default User;

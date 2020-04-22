@@ -6,3 +6,6 @@ secret_key.json
 
 # compiled server side .ts files
 *.js
+
+# exclude test files
+!*.test.js

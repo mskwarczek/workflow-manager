@@ -29,7 +29,7 @@ const fillFormWithValidData = queryByTestId => {
   fireEvent.change(queryByTestId('confirmPassword'), { target: { value: 'roundhousekick' } });
 };
 
-it('validates email address on submit', () => {
+it('validates email address on submit', async () => {
   const { queryByTestId } = render(<RegisterPage />);
   fillFormWithValidData(queryByTestId);
   fireEvent.change(queryByTestId('email'), { target: { value: 'chucknorris.com' } });

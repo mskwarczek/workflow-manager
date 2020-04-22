@@ -12,6 +12,7 @@ const initialState: IUserState = {
   firstName: '',
   lastName: '',
   email: '',
+  password: '',
   organizations: [],
   isLoading: false,
   error: false,
@@ -21,7 +22,7 @@ const userReducer = (
   state = initialState,
   action: UserActionTypes,
 ): IUserState => {
-  console.log(state, action);
+  console.log('userReducer', state, action);
   switch (action.type) {
     case REGISTER_USER_REQUEST: return {
       ...state,

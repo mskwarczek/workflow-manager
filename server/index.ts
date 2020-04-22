@@ -13,7 +13,7 @@ const MongoStore = mongo(session);
 
 const server = express();
 
-mongoose.connect(DATABASEURL, {
+mongoose.connect(`${DATABASEURL}workflow-manager?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
@@ -53,9 +53,9 @@ server.post('/api/user/register', (req, res, next) => {
     if (err) {
       if (err.name === 'MongoError' && err.code === 11000) next(new Error('This email address is already taken. Try another one.'));
       else next(new Error('MongoDB error. Unable to save user data to database.'));
+    } else if (user) {
+      return res.send(user);
     };
-    const responseData = JSON.stringify(user);
-    return res.send(responseData);
   });
 });
 
@@ -67,9 +67,5 @@ server.use((err: Error, req: express.Request, res: express.Response, next: NextF
   res.status(500).send(err.message);
  });
 
-// development only
-const port = process.env.PORT || 5000;
-server.listen(port);
-console.log(`Server is listening on port ${port}`);
-
+module.exports = server;
 export default server;

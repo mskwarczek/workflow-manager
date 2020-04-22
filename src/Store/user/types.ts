@@ -9,12 +9,9 @@ export interface IUserForm {
   password: string;
 };
 
-export interface IUser {
+export interface IUser extends IUserForm {
   _id: string;
   isVerified: boolean;
-  firstName: string;
-  lastName: string;
-  email: string;
   organizations: string[];
 };
 

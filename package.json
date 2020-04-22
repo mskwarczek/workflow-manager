@@ -31,6 +31,7 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "supertest": "^4.0.2",
     "typescript": "^3.7.5"
   },
   "scripts": {
@@ -38,8 +39,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server-compile": "tsc -w -p server/tsconfig.json",
-    "server-run": "nodemon server/index.js",
+    "server-compile": "tsc -w -p server/config/tsconfig.json",
+    "server-test": "tsc -p server/config/tsconfig.json && jest --config server/config/jest.config.js server/",
+    "server-run": "nodemon server/devServer.js",
     "server": "concurrently \"npm run server-compile\" \"npm run server-run\"",
     "dev": "concurrently \"npm run server\" \"npm run start\""
   },

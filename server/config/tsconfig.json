@@ -17,7 +17,8 @@
     "noEmit": false
   },
   "include": [
-    "./index.ts",
-    "schema"
+    "../index.ts",
+    "../devServer.ts",
+    "../schema"
   ]
 }
