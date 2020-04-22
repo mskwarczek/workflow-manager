@@ -17,11 +17,7 @@ export const registerUser = (user: IUserForm): ThunkAction<Promise<void>, {}, {}
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
     dispatch(registerUserRequest());
     axios.post('/api/user/register', user)
-      .then(response => {
-        const newUser = response.data;
-        delete newUser.__v;
-        dispatch(registerUserSuccess(newUser))
-      })
+      .then(response => dispatch(registerUserSuccess(response.data)))
       .catch(error => dispatch(registerUserFailure(error.response.data)));
   };
 };

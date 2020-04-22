@@ -44,4 +44,5 @@ interface IUser extends mongoose.Document {
 
 const User = mongoose.model<IUser, mongoose.Model<IUser>>('User', UserSchema);
 
+module.exports = User;
 export default User;

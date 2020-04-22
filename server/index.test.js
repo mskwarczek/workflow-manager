@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const supertest = require('supertest');
 
 const server = require('./index');
+const User = require ('./schema/User');
 const DATABASEURL = require('./config/dburl.json');
 
 const request = supertest(server);
@@ -9,6 +10,11 @@ const request = supertest(server);
 const mockUserRegister = {
   firstName: 'Chuck',
   lastName: 'Norris',
+  email: 'chuck@norris.com',
+  password: 'roundhousekick',
+};
+
+const mockUserLogin = {
   email: 'chuck@norris.com',
   password: 'roundhousekick',
 };
@@ -29,19 +35,41 @@ beforeAll(async () => {
   });
 });
 
-afterEach(async () => {
+afterAll(async () => {
   await removeAllCollections();
 });
 
-it('registers new user', done => {
-  request
-    .post('/api/user/register')
-    .send(mockUserRegister)
-    .set('Accept', 'application/json')
-    .expect(200)
-    .end((err, res) => {
-      if (err) throw err;
-      expect(res.body.email).toBe('chuck@norris.com');
-      done();
-    });
+describe('user register and log in', () => {
+
+  it('registers new user and redirects to another page', done => {
+    request
+      .post('/api/user/register')
+      .send(mockUserRegister)
+      .set('Accept', 'application/json')
+      .expect(303)
+      .expect('Location', '/')
+      .end((err, res) => {
+        if (err) throw err;
+        done();
+      });
+  });
+
+  it('saves user to database after registration', async done => {
+    const user = await User.findOne({ email: 'chuck@norris.com' });
+    expect(user.email).toBeTruthy();
+    done();
+  });
+
+  it('signs in new user', done => {
+    request
+      .post('/api/user/signin')
+      .send(mockUserLogin)
+      .set('Accept', 'application/json')
+      .expect(200)
+      .end((err, res) => {
+        if (err) throw err;
+        expect(res.body.email).toBe('chuck@norris.com');
+        done();
+      });
+  });
 });

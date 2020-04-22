@@ -33,6 +33,7 @@ server.use(session({
   store: new MongoStore({ mongooseConnection: mongoose.connection }),
   cookie: {
     sameSite: true,
+    maxAge: 1000 * 60 * 60 * 48,
     secure: false, // needs to be changed to true after receiving ssl certificate
     httpOnly: false,
   },
@@ -53,19 +54,42 @@ server.post('/api/user/register', (req, res, next) => {
     if (err) {
       if (err.name === 'MongoError' && err.code === 11000) next(new Error('This email address is already taken. Try another one.'));
       else next(new Error('MongoDB error. Unable to save user data to database.'));
-    } else if (user) {
-      return res.send(user);
+    } else if (!req.session) next(new Error('Unable to create new session.'));
+    else {
+      req.session.userId = user._id;
+      return res.redirect(303, '/');
     };
   });
 });
 
+server.post('/api/user/signin', (req, res, next) => {
+  User.findOne({ email: req.body.email })
+    .then(user => {
+      if (!user) next(new Error('Wrong email address.'));
+      else if (!req.session) next(new Error('Unable to create new session.'));
+      else {
+        req.session.userId = user._id;
+        return res.send({
+          _id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          password: user.password,
+          isVerified: user.isVerified,
+          organizations: user.organizations
+        });
+      };
+    })
+    .catch(error => next(new Error(`MongoDB error. Unable to retrieve data from database. ${error}`))); 
+});
+
 server.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build/index.html'));
+  res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
 server.use((err: Error, req: express.Request, res: express.Response, next: NextFunction) => {
   res.status(500).send(err.message);
- });
+});
 
 module.exports = server;
 export default server;
