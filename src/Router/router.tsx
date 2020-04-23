@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import HomePage from '../CommonViews/HomePage/HomePage';
 import RegisterPage from '../CommonViews/RegisterPage/RegisterPage';
+import SignInPage from '../CommonViews/SignInPage/SignInPage';
 import Test from '../CommonViews/Test';
 
 const Router = () => {
@@ -11,6 +12,7 @@ const Router = () => {
     <Switch >
       <Route exact path='/' component={HomePage} />
       <Route exact path='/register' component={RegisterPage} />
+      <Route exact path='/signin' component={SignInPage} />
       <Route exact path='/test' component={Test} />
     </Switch>
   );
