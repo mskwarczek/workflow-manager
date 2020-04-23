@@ -24,7 +24,7 @@ export const registerUser = (user: IUserRegister): ThunkAction<Promise<void>, {}
   return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
     dispatch(registerUserRequest());
     axios.post('/api/user/register', user)
-      .then(response => dispatch(registerUserSuccess()))
+      .then(response => dispatch(registerUserSuccess(response.data)))
       .catch(error => dispatch(registerUserFailure(error.response.data)));
   };
 };
@@ -35,9 +35,10 @@ export const registerUserRequest = (): UserActionTypes => {
   };
 };
 
-export const registerUserSuccess = (): UserActionTypes => {
+export const registerUserSuccess = (user: IUser): UserActionTypes => {
   return {
     type: REGISTER_USER_SUCCESS,
+    user,
   };
 };
 

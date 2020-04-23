@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { IUserDocument } from '../types';
+
 const UserSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -32,17 +34,7 @@ const UserSchema = new mongoose.Schema({
   }],
 });
 
-interface IUser extends mongoose.Document {
-  _id: string;
-  firstName: string;
-  lastName?: string;
-  email: string;
-  password: string;
-  isVerified: boolean;
-  organizations: string[];
-};
-
-const User = mongoose.model<IUser, mongoose.Model<IUser>>('User', UserSchema);
+const User = mongoose.model<IUserDocument, mongoose.Model<IUserDocument>>('User', UserSchema);
 
 module.exports = User;
 export default User;

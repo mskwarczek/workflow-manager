@@ -43,11 +43,7 @@ const userReducer = (
       isLoading: false,
       error: action.error,
     };
-    case REGISTER_USER_SUCCESS: return {
-      ...state,
-      isLoading: false,
-      error: false,
-    };
+    case REGISTER_USER_SUCCESS:
     case SIGN_IN_USER_SUCCESS:
     case GET_USER_SUCCESS: return {
       ...state,

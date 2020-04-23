@@ -35,6 +35,7 @@ interface IRegisterUserRequest {
 
 interface IRegisterUserSuccess {
   type: typeof REGISTER_USER_SUCCESS;
+  user: IUser;
 };
 
 interface IRegisterUserFailure {

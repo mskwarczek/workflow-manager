@@ -4,10 +4,12 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import session from 'express-session';
 import mongo from 'connect-mongo';
+import bcrypt from 'bcrypt';
 
 import DATABASEURL from './config/dburl.json';
 import SECRETKEY from './config/secret_key.json';
 import User from './schema/User';
+import { ServerError } from './types';
 
 const MongoStore = mongo(session);
 
@@ -42,22 +44,27 @@ server.use(session({
 server.use(express.static(path.join(__dirname, 'build')));
 
 server.post('/api/user/register', (req, res, next) => {
-  let newUser = new User({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-    isVerified: false,
-    organizations: [],
-  });
-  newUser.save((err, user) => {
-    if (err) {
-      if (err.name === 'MongoError' && err.code === 11000) next(new Error('This email address is already taken. Try another one.'));
-      else next(new Error('MongoDB error. Unable to save user data to database.'));
-    } else if (!req.session) next(new Error('Unable to create new session.'));
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
+    if (err) return next(new ServerError(500, 'Unable to hash password.'));
     else {
-      req.session.userId = user._id;
-      return res.sendStatus(200);
+      let newUser = new User({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: hash,
+        isVerified: false,
+        organizations: [],
+      });
+      newUser.save((err, user) => {
+        if (err) {
+          if (err.name === 'MongoError' && err.code === 11000) return next(new ServerError(409, 'This email address is already taken. Try another one.'));
+          else return next(new ServerError(500, 'MongoDB error. Unable to save user data to database.'));
+        } else if (!req.session) return next(new ServerError(500, 'Unable to create new session.'));
+        else {
+          req.session.userId = user._id;
+          return res.sendStatus(200);
+        };
+      });
     };
   });
 });
@@ -65,29 +72,33 @@ server.post('/api/user/register', (req, res, next) => {
 server.post('/api/user/signin', (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then(user => {
-      if (!user) next(new Error('Wrong email address.'));
-      else if (!req.session) next(new Error('Unable to create new session.'));
-      else if (req.body.password === user.password) {
-        req.session.userId = user._id;
-        return res.redirect(303, '/api/user');
-      } else next(new Error('Wrong password.'));
+      if (!user) return next(new ServerError(401, 'Wrong email address.'));
+      else bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if (err) return next(new ServerError(500, 'Unable to compare password with hash.'));
+        else if (!result) return next(new ServerError(401, 'Wrong password.'));
+        else if (!req.session) return next(new ServerError(500, 'Unable to create new session.'));
+        else {
+          req.session.userId = user._id;
+          return res.redirect(303, '/api/user');
+        };
+      });
     })
-    .catch(error => next(new Error(`MongoDB error. Unable to retrieve data from database. ${error}`))); 
+    .catch(error => next(new ServerError(500, `MongoDB error. Unable to retrieve data from database. ${error}`, error))); 
 });
 
 server.use((req, res, next) => {
   if (req.session && !req.session.userId) {
-    return next(new Error('You need to sign in to continue.'));
+    return next(new ServerError(401, 'You need to sign in to continue.'));
   };
   return next();
 });
 
 server.get('/api/user', (req, res, next) => {
-  if (!req.session) next(new Error('Unable to read session data.'));
+  if (!req.session) return next(new ServerError(500, 'Unable to read session data.'));
   else {
     User.findOne({ _id: req.session.userId })
       .then(user => {
-        if (!user) next(new Error('Unable to read user data.'));
+        if (!user) return next(new ServerError(500, 'Unable to read user data.'));
         else {
           return res.send({
             _id: user._id,
@@ -100,16 +111,16 @@ server.get('/api/user', (req, res, next) => {
           });
         };
       })
-      .catch(error => next(new Error(`MongoDB error. Unable to retrieve data from database. ${error}`))); 
+      .catch(error => next(new ServerError(500, `MongoDB error. Unable to retrieve data from database. ${error}`, error))); 
   };
 });
 
 server.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../build/index.html'));
+  return res.sendFile(path.join(__dirname, '../build/index.html'));
 });
 
-server.use((err: Error, req: express.Request, res: express.Response, next: NextFunction) => {
-  res.status(500).send(err.message);
+server.use((err: ServerError, req: express.Request, res: express.Response, next: NextFunction) => {
+  return res.status(err.status || 500).send(err.message || 'Server error. Something went wrong');
 });
 
 module.exports = server;
