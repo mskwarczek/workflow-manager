@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { IRootState } from '../../Store/store';
 
+import { IRootState } from '../../Store/store';
 import { registerUser } from '../../Store/user/actions';
 
 const RegisterPage = () => {

@@ -13,6 +13,9 @@ import {
   SIGN_IN_USER_REQUEST,
   SIGN_IN_USER_SUCCESS,
   SIGN_IN_USER_FAILURE,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
 } from './types';
 
 // Register user
@@ -72,6 +75,37 @@ export const signInUserSuccess = (user: IUser): UserActionTypes => {
 export const signInUserFailure = (error: string): UserActionTypes => {
   return {
     type: SIGN_IN_USER_FAILURE,
+    error: error,
+  };
+};
+
+// Get user
+
+export const getUser = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    dispatch(getUserRequest());
+    axios.get('/api/user')
+      .then(response => dispatch(getUserSuccess(response.data)))
+      .catch(error => dispatch(getUserFailure(error.response.data)));
+  };
+};
+
+export const getUserRequest = (): UserActionTypes => {
+  return {
+    type: GET_USER_REQUEST,
+  };
+};
+
+export const getUserSuccess = (user: IUser): UserActionTypes => {
+  return {
+    type: GET_USER_SUCCESS,
+    user,
+  };
+};
+
+export const getUserFailure = (error: string): UserActionTypes => {
+  return {
+    type: GET_USER_FAILURE,
     error: error,
   };
 };

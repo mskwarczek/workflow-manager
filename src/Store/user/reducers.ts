@@ -7,6 +7,9 @@ import {
   SIGN_IN_USER_REQUEST,
   SIGN_IN_USER_SUCCESS,
   SIGN_IN_USER_FAILURE,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
 } from './types';
 
 const initialState: IUserState = {
@@ -28,12 +31,14 @@ const userReducer = (
   console.log('userReducer', state, action);
   switch (action.type) {
     case REGISTER_USER_REQUEST:
-    case SIGN_IN_USER_REQUEST: return {
+    case SIGN_IN_USER_REQUEST:
+    case GET_USER_REQUEST: return {
       ...state,
       isLoading: true,
     };
     case REGISTER_USER_FAILURE:
-    case SIGN_IN_USER_FAILURE: return {
+    case SIGN_IN_USER_FAILURE:
+    case GET_USER_FAILURE: return {
       ...state,
       isLoading: false,
       error: action.error,
@@ -41,13 +46,14 @@ const userReducer = (
     case REGISTER_USER_SUCCESS: return {
       ...state,
       isLoading: false,
-      error: false
+      error: false,
     };
-    case SIGN_IN_USER_SUCCESS: return {
+    case SIGN_IN_USER_SUCCESS:
+    case GET_USER_SUCCESS: return {
       ...state,
       ...action.user,
       isLoading: false,
-      error: false
+      error: false,
     };
     default: return state;
   };

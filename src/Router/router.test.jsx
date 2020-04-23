@@ -1,11 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { MemoryRouter } from 'react-router-dom';
+import { render } from '../config/test-utils';
 
 import Router from './router';
 
 it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<MemoryRouter><Router /></MemoryRouter>, div);
-  ReactDOM.unmountComponentAtNode(div);
+  render(<Router />);
 });

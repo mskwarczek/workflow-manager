@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useHistory, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { IRootState } from '../../Store/store';
 
-import { signInUser } from '../../Store/user/actions';
+import { IRootState } from '../../Store/store';
+import { signInUser, getUser } from '../../Store/user/actions';
 
 const SignInPage = () => {
 
   const [ email, setEmail ] = useState('');
   const [ password, setPassword ] = useState('');
 
-  const serverError = useSelector((state: IRootState) => state.user.error);
+  const userState = useSelector((state: IRootState) => state.user);
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
+  const { from }: any = location.state || { from: { pathname: '/' } };
+
+  useEffect(() => {
+    if (userState._id) history.replace(from);
+    else dispatch(getUser());
+  }, [userState._id, from, dispatch, history]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,7 +56,7 @@ const SignInPage = () => {
             data-testid='submit'
             type='submit'
             value={'Sign in'} />
-          {serverError && <p data-testid='serverErorMsg'>{serverError}</p>}
+          {userState.error && <p data-testid='serverErorMsg'>{userState.error}</p>}
       </form>
       <p>Don't have an account?</p><NavLink className='link' to='/register'>Register</NavLink>
     </div>

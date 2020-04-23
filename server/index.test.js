@@ -5,7 +5,7 @@ const server = require('./index');
 const User = require ('./schema/User');
 const DATABASEURL = require('./config/dburl.json');
 
-const request = supertest(server);
+let request = supertest.agent(server);
 
 const mockUserRegister = {
   firstName: 'Chuck',
@@ -41,13 +41,12 @@ afterAll(async () => {
 
 describe('user register and log in', () => {
 
-  it('registers new user and redirects to another page', done => {
+  it('registers new user', done => {
     request
       .post('/api/user/register')
       .send(mockUserRegister)
       .set('Accept', 'application/json')
-      .expect(303)
-      .expect('Location', '/')
+      .expect(200)
       .end((err, res) => {
         if (err) throw err;
         done();
@@ -64,6 +63,18 @@ describe('user register and log in', () => {
     request
       .post('/api/user/signin')
       .send(mockUserLogin)
+      .set('Accept', 'application/json')
+      .expect(303)
+      .expect('Location', '/api/user')
+      .end((err, res) => {
+        if (err) throw err;
+        done();
+      });
+  });
+
+  it('sends back user data', done => {
+    request
+      .get('/api/user')
       .set('Accept', 'application/json')
       .expect(200)
       .end((err, res) => {

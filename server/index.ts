@@ -57,7 +57,7 @@ server.post('/api/user/register', (req, res, next) => {
     } else if (!req.session) next(new Error('Unable to create new session.'));
     else {
       req.session.userId = user._id;
-      return res.redirect(303, '/');
+      return res.sendStatus(200);
     };
   });
 });
@@ -67,20 +67,41 @@ server.post('/api/user/signin', (req, res, next) => {
     .then(user => {
       if (!user) next(new Error('Wrong email address.'));
       else if (!req.session) next(new Error('Unable to create new session.'));
-      else {
+      else if (req.body.password === user.password) {
         req.session.userId = user._id;
-        return res.send({
-          _id: user._id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          password: user.password,
-          isVerified: user.isVerified,
-          organizations: user.organizations
-        });
-      };
+        return res.redirect(303, '/api/user');
+      } else next(new Error('Wrong password.'));
     })
     .catch(error => next(new Error(`MongoDB error. Unable to retrieve data from database. ${error}`))); 
+});
+
+server.use((req, res, next) => {
+  if (req.session && !req.session.userId) {
+    return next(new Error('You need to sign in to continue.'));
+  };
+  return next();
+});
+
+server.get('/api/user', (req, res, next) => {
+  if (!req.session) next(new Error('Unable to read session data.'));
+  else {
+    User.findOne({ _id: req.session.userId })
+      .then(user => {
+        if (!user) next(new Error('Unable to read user data.'));
+        else {
+          return res.send({
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            password: user.password,
+            isVerified: user.isVerified,
+            organizations: user.organizations
+          });
+        };
+      })
+      .catch(error => next(new Error(`MongoDB error. Unable to retrieve data from database. ${error}`))); 
+  };
 });
 
 server.get('*', (req, res) => {
