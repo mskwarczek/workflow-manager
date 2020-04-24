@@ -13,6 +13,9 @@ import {
   SIGN_IN_USER_REQUEST,
   SIGN_IN_USER_SUCCESS,
   SIGN_IN_USER_FAILURE,
+  SIGN_OUT_USER_REQUEST,
+  SIGN_OUT_USER_SUCCESS,
+  SIGN_OUT_USER_FAILURE,
   GET_USER_REQUEST,
   GET_USER_SUCCESS,
   GET_USER_FAILURE,
@@ -76,6 +79,36 @@ export const signInUserSuccess = (user: IUser): UserActionTypes => {
 export const signInUserFailure = (error: string): UserActionTypes => {
   return {
     type: SIGN_IN_USER_FAILURE,
+    error: error,
+  };
+};
+
+// Sign out user
+
+export const signOutUser = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
+  return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+    dispatch(signOutUserRequest());
+    axios.post('/api/user/signout')
+      .then(response => dispatch(signOutUserSuccess()))
+      .catch(error => dispatch(signOutUserFailure(error.response.data)));
+  };
+};
+
+export const signOutUserRequest = (): UserActionTypes => {
+  return {
+    type: SIGN_OUT_USER_REQUEST,
+  };
+};
+
+export const signOutUserSuccess = (): UserActionTypes => {
+  return {
+    type: SIGN_OUT_USER_SUCCESS,
+  };
+};
+
+export const signOutUserFailure = (error: string): UserActionTypes => {
+  return {
+    type: SIGN_OUT_USER_FAILURE,
     error: error,
   };
 };

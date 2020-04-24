@@ -4,6 +4,9 @@ export const REGISTER_USER_FAILURE = 'REGISTER_USER_FAILURE';
 export const SIGN_IN_USER_REQUEST = 'SIGN_IN_USER_REQUEST';
 export const SIGN_IN_USER_SUCCESS = 'SIGN_IN_USER_SUCCESS';
 export const SIGN_IN_USER_FAILURE = 'SIGN_IN_USER_FAILURE';
+export const SIGN_OUT_USER_REQUEST = 'SIGN_OUT_USER_REQUEST';
+export const SIGN_OUT_USER_SUCCESS = 'SIGN_OUT_USER_SUCCESS';
+export const SIGN_OUT_USER_FAILURE = 'SIGN_OUT_USER_FAILURE';
 export const GET_USER_REQUEST = 'GET_USER_REQUEST';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 export const GET_USER_FAILURE = 'GET_USER_FAILURE';
@@ -57,6 +60,19 @@ interface ISignInUserFailure {
   error: string;
 };
 
+interface ISignOutUserRequest {
+  type: typeof SIGN_OUT_USER_REQUEST;
+};
+
+interface ISignOutUserSuccess {
+  type: typeof SIGN_OUT_USER_SUCCESS;
+};
+
+interface ISignOutUserFailure {
+  type: typeof SIGN_OUT_USER_FAILURE;
+  error: string;
+};
+
 interface IGetUserRequest {
   type: typeof GET_USER_REQUEST;
 };
@@ -74,4 +90,5 @@ interface IGetUserFailure {
 export type UserActionTypes =
   IRegisterUserRequest | IRegisterUserSuccess |IRegisterUserFailure |
   ISignInUserRequest | ISignInUserSuccess | ISignInUserFailure |
+  ISignOutUserRequest | ISignOutUserSuccess | ISignOutUserFailure |
   IGetUserRequest | IGetUserSuccess | IGetUserFailure;

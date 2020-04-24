@@ -83,4 +83,15 @@ describe('user register and log in', () => {
         done();
       });
   });
+
+  it('signs user out', done => {
+    request
+      .post('/api/user/signout')
+      .set('Accept', 'application/json')
+      .expect(200)
+      .end((err, res) => {
+        if (err) throw err;
+        done();
+      });
+  });
 });

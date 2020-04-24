@@ -86,6 +86,17 @@ server.post('/api/user/signin', (req, res, next) => {
     .catch(error => next(new ServerError(500, `MongoDB error. Unable to retrieve data from database. ${error}`, error))); 
 });
 
+server.post('/api/user/signout', (req, res, next) => {
+  if (!req.session) return next(new ServerError(500, 'Unable to access session.'));
+  req.session.destroy(error => {
+    if (error) return next(new ServerError(500, `Unable to end session. ${error}`, error));
+    else {
+      res.clearCookie('workflow_sid');
+      return res.sendStatus(200);
+    };
+  });
+});
+
 server.use((req, res, next) => {
   if (req.session && !req.session.userId) {
     return next(new ServerError(401, 'You need to sign in to continue.'));
