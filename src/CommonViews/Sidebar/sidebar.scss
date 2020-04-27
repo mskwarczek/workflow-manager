@@ -1,0 +1,17 @@
+@import '../../helpers/css/variables';
+
+.sidebar {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: $elemDist;
+
+  &__user {
+    padding: $elemDist;
+  }
+
+  &__navigation {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: $elemDist;
+  }
+}

@@ -1,0 +1,38 @@
+@import './helpers/css/variables';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: $fontUnit;
+}
+
+.container {
+  position: relative;
+  padding: $divDist;
+}
+
+.button {
+  width: 100%;
+  margin: $elemDist 0;
+}
+
+.formInput {
+  margin: $elemDist 0;
+}
+
+#workflow-manager {
+  display: flex;
+  flex-flow: row nowrap;
+
+  :first-child {
+    flex: 10;
+  }
+
+  :nth-child(2) {
+    flex: 90;
+  }
+}

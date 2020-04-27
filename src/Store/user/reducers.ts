@@ -1,4 +1,5 @@
 import {
+  IError,
   IUserState,
   UserActionTypes,
   USER_ACTION_REQUEST,
@@ -9,6 +10,10 @@ import {
   USER_SIGN_OUT_SUCCESS,
 } from './types';
 
+const initialError: IError = {
+  status: false,
+};
+
 const initialState: IUserState = {
   _id: '',
   isVerified: false,
@@ -18,7 +23,7 @@ const initialState: IUserState = {
   password: '',
   organizations: [],
   isLoading: false,
-  error: false,
+  error: initialError,
 };
 
 const userReducer = (
@@ -42,7 +47,7 @@ const userReducer = (
       ...state,
       ...action.user,
       isLoading: false,
-      error: false,
+      error: initialError,
     };
     case USER_SIGN_OUT_SUCCESS: return initialState;
     default: return state;

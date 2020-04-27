@@ -1,0 +1,22 @@
+@import '../helpers/css/variables';
+@import '../helpers/css/mixins';
+
+.authPage {
+  @include position-lt(50%, 40%);
+  width: 60vh;
+  height: 60vh;
+
+  &__header {
+    margin: $elemDist;
+    text-align: center;
+  }
+
+  &__form {
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  &__redirect {
+    margin: $elemDist 0;
+  }
+}

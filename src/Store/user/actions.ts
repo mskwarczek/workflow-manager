@@ -3,6 +3,7 @@ import { AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 
 import {
+  IError,
   IUser,
   IUserSignIn,
   IUserRegister,
@@ -23,10 +24,10 @@ export const userActionRequest = (): UserActionTypes => {
   };
 };
 
-export const userActionFailure = (error: string): UserActionTypes => {
+export const userActionFailure = (error: IError): UserActionTypes => {
   return {
     type: USER_ACTION_FAILURE,
-    error: error,
+    error,
   };
 };
 
@@ -37,7 +38,7 @@ export const registerUser = (user: IUserRegister): ThunkAction<Promise<void>, {}
     dispatch(userActionRequest());
     axios.post('/api/user/register', user)
       .then(response => dispatch(registerUserSuccess(response.data)))
-      .catch(error => dispatch(userActionFailure(error.response.data)));
+      .catch(error => dispatch(userActionFailure(error.response)));
   };
 };
 
@@ -55,7 +56,7 @@ export const signInUser = (user: IUserSignIn): ThunkAction<Promise<void>, {}, {}
     dispatch(userActionRequest());
     axios.post('/api/user/signin', user)
       .then(response => dispatch(signInUserSuccess(response.data)))
-      .catch(error => dispatch(userActionFailure(error.response.data)));
+      .catch(error => dispatch(userActionFailure(error.response)));
   };
 };
 
@@ -73,7 +74,7 @@ export const signOutUser = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => 
     dispatch(userActionRequest());
     axios.post('/api/user/signout')
       .then(response => dispatch(signOutUserSuccess()))
-      .catch(error => dispatch(userActionFailure(error.response.data)));
+      .catch(error => dispatch(userActionFailure(error.response)));
   };
 };
 
@@ -90,7 +91,7 @@ export const getUser = (): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
     dispatch(userActionRequest());
     axios.get('/api/user')
       .then(response => dispatch(getUserSuccess(response.data)))
-      .catch(error => dispatch(userActionFailure(error.response.data)));
+      .catch(error => dispatch(userActionFailure(error.response)));
   };
 };
 

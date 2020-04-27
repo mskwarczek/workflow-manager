@@ -1,12 +1,13 @@
 import React from 'react';
 
+import './app.scss';
 import Router from './Router/router';
 import Sidebar from './CommonViews/Sidebar/Sidebar';
 
 const App = () => {
 
   return (
-    <div>
+    <div id='workflow-manager'>
       <Sidebar />
       <Router />
     </div>

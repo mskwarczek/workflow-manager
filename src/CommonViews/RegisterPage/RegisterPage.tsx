@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
+import '../authPage.scss';
 import { IRootState } from '../../Store/store';
 import { registerUser } from '../../Store/user/actions';
 
@@ -25,6 +26,7 @@ const RegisterPage = () => {
 
   const serverError = useSelector((state: IRootState) => state.user.error);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const validateInputLength = (setFunction: (val: FormField) => void, value: string) => {
     value.length <= 30
@@ -58,10 +60,14 @@ const RegisterPage = () => {
   };
   
   return (
-    <div>
-      <h2>Register</h2>
-      <p>Create your free account.</p>
-        <form onSubmit={event => handleSubmit(event)}>
+    <div className='container authPage'>
+      <div className='authPage__header'>
+        <h2>Register</h2>
+        <p>Create your free account.</p>
+      </div>
+        <form
+          className='authPage__form'
+          onSubmit={event => handleSubmit(event)}>
           <input
             className='formInput'
             data-testid='firstName'
@@ -114,13 +120,22 @@ const RegisterPage = () => {
           {confirmPassword.error && <p data-testid='errorMsg'>{confirmPassword.error}</p>}
           {/* Links to terms of use etc. go here */}
           <input
-            className='button button--important'
+            className='button'
             data-testid='submit'
             type='submit'
             value={'Register'} />
-          {serverError && <p data-testid='serverErorMsg'>{serverError}</p>}
       </form>
-      <p>Already have an account?</p><NavLink className='link' to='/signin'>Sign in</NavLink>
+      <button
+        className='button'
+        onClick={() => history.goBack()}>
+        Back
+      </button>
+      {serverError.data && serverError.status !== 401 &&
+        <p className='authPage__error'
+          data-testid='serverErorMsg'>
+          {serverError.data}
+        </p>}
+      <p className='authPage__redirect'>Already have an account? <NavLink className='link' to='/signin'>Sign in</NavLink></p>
     </div>
   );
 };

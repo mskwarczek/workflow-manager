@@ -5,6 +5,11 @@ export const USER_SIGN_IN_SUCCESS = 'USER_SIGN_IN_SUCCESS';
 export const USER_SIGN_OUT_SUCCESS = 'USER_SIGN_OUT_SUCCESS';
 export const USER_GET_SUCCESS = 'USER_GET_SUCCESS';
 
+export interface IError {
+  status: number | boolean;
+  data?: string | object;
+};
+
 export interface IUserSignIn {
   email: string;
   password: string;
@@ -23,7 +28,7 @@ export interface IUser extends IUserRegister {
 
 export interface IUserState extends IUser {
   isLoading: boolean;
-  error: boolean | string;
+  error: IError;
 };
 
 interface IUserActionRequest {
@@ -32,7 +37,7 @@ interface IUserActionRequest {
 
 interface IUserActionFailure {
   type: typeof USER_ACTION_FAILURE;
-  error: string;
+  error: IError;
 };
 
 interface IRegisterUserSuccess {
